@@ -1,0 +1,11 @@
+# Go build cache (worktree-local, if used)
+.gocache/
+.gomodcache/
+
+# WASM build artifacts
+web/public/wasm/main.wasm
+web/public/wasm/wasm_exec.js
+
+# Node
+web/node_modules/
+web/dist/
