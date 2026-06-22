@@ -1,11 +1,12 @@
 <script>
   import { onMount } from 'svelte'
-  import { loadWasm, analyzeCorefile } from './lib/wasm.js'
+  import { loadWasm, analyzeCorefile, loadPluginCatalog } from './lib/wasm.js'
   import { loadInitialCorefile } from './lib/initialContent.js'
   import Editor from './lib/Editor.svelte'
   import StructureTree from './lib/StructureTree.svelte'
   import ValidationPanel from './lib/ValidationPanel.svelte'
   import RequestFlow from './lib/RequestFlow.svelte'
+  import PluginReference from './lib/PluginReference.svelte'
 
   const SAMPLE = `example.org:53 {
     log
@@ -27,10 +28,15 @@
   /** @type {string|null} */
   let initialDoc = null
   let timer
+  /** @type {Record<string, {summary: string, docUrl: string}>} */
+  let catalog = {}
 
   onMount(async () => {
     const wasmReady = loadWasm()
-      .then(() => { loaded = true })
+      .then(() => {
+        loaded = true
+        try { catalog = loadPluginCatalog() } catch { /* catalog optional */ }
+      })
       .catch(() => { /* wasm failed; editor still renders, analysis unavailable */ })
     initialDoc = await loadInitialCorefile(SAMPLE)
     await wasmReady
@@ -63,6 +69,7 @@
         <StructureTree corefile={result?.corefile ?? null} />
         <ValidationPanel diagnostics={result?.diagnostics ?? []} />
         <RequestFlow corefile={result?.corefile ?? null} />
+        <PluginReference {catalog} />
       </div>
     </section>
   </div>
