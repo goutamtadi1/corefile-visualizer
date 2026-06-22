@@ -9,3 +9,10 @@ web/public/wasm/wasm_exec.js
 # Node
 web/node_modules/
 web/dist/
+
+# Native CLI build output
+bin/
+
+# Embedded web app (populated by scripts/build-cli.sh; keep the dir compilable)
+internal/webui/dist/*
+!internal/webui/dist/.gitkeep
