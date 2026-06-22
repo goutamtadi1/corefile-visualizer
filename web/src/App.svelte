@@ -2,6 +2,7 @@
   import { onMount } from 'svelte'
   import { loadWasm, analyzeCorefile } from './lib/wasm.js'
   import Editor from './lib/Editor.svelte'
+  import StructureTree from './lib/StructureTree.svelte'
 
   const SAMPLE = `example.org:53 {
     log
@@ -43,15 +44,8 @@
   <h1>CoreDNS Corefile Visualizer</h1>
   <div class="layout">
     <Editor value={SAMPLE} on:change={onChange} />
-    <section data-testid="result-summary">
-      {#if result?.corefile}
-        {result.corefile.serverBlocks.length} server block(s),
-        {result.diagnostics.length} diagnostic(s)
-      {:else if result}
-        parse error
-      {:else}
-        analyzing…
-      {/if}
+    <section class="views">
+      <StructureTree corefile={result?.corefile ?? null} />
     </section>
   </div>
 </main>
