@@ -12,6 +12,7 @@ import (
 	"os/signal"
 	"runtime"
 	"syscall"
+	"time"
 
 	"github.com/gtadi/corefile-visualizer/internal/cliserver"
 	"github.com/gtadi/corefile-visualizer/internal/webui"
@@ -48,7 +49,10 @@ func main() {
 	}
 	url := fmt.Sprintf("http://%s/", ln.Addr().String())
 
-	srv := &http.Server{Handler: cliserver.Handler(app, content)}
+	srv := &http.Server{
+		Handler:           cliserver.Handler(app, content),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
 	go func() {
 		if err := srv.Serve(ln); err != nil && err != http.ErrServerClosed {
 			fmt.Fprintln(os.Stderr, "server error:", err)

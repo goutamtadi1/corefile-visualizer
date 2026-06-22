@@ -67,6 +67,20 @@ func TestHandlerServesAsset(t *testing.T) {
 	}
 }
 
+func TestHandlerRejectsNonGetCorefile(t *testing.T) {
+	srv := httptest.NewServer(Handler(testApp(), "x"))
+	defer srv.Close()
+
+	resp, err := http.Post(srv.URL+"/corefile", "text/plain", strings.NewReader("y"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusMethodNotAllowed {
+		t.Fatalf("POST /corefile status = %d, want 405", resp.StatusCode)
+	}
+}
+
 func TestListenLocalRandomPort(t *testing.T) {
 	ln, err := ListenLocal(0)
 	if err != nil {

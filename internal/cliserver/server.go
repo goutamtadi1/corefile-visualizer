@@ -12,6 +12,10 @@ import (
 func Handler(app fs.FS, corefile string) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/corefile", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		_, _ = w.Write([]byte(corefile))
 	})
