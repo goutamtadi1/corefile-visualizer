@@ -51,13 +51,64 @@
 <main>
   <h1>CoreDNS Corefile Visualizer</h1>
   <div class="layout">
-    {#if initialDoc !== null}
-      <Editor value={initialDoc} on:change={onChange} />
-    {/if}
-    <section class="views">
-      <StructureTree corefile={result?.corefile ?? null} />
-      <ValidationPanel diagnostics={result?.diagnostics ?? []} />
-      <RequestFlow corefile={result?.corefile ?? null} />
+    <section class="pane pane-source" aria-label="Corefile source">
+      <h2>Corefile</h2>
+      {#if initialDoc !== null}
+        <Editor value={initialDoc} on:change={onChange} />
+      {/if}
+    </section>
+    <section class="pane pane-views" aria-label="Visualization">
+      <h2>Visualization</h2>
+      <div class="views">
+        <StructureTree corefile={result?.corefile ?? null} />
+        <ValidationPanel diagnostics={result?.diagnostics ?? []} />
+        <RequestFlow corefile={result?.corefile ?? null} />
+      </div>
     </section>
   </div>
 </main>
+
+<style>
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  /* Two panes: source (Corefile) on the left, generated views on the right. */
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .pane {
+    min-width: 0; /* allow children to shrink instead of overflowing the grid */
+  }
+
+  .pane h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.6;
+    margin: 0 0 0.5rem;
+  }
+
+  /* Right pane scrolls independently of the editor on tall content. */
+  .pane-views .views {
+    max-height: calc(100vh - 8rem);
+    overflow: auto;
+  }
+
+  /* Stack vertically (editor on top) on narrow screens. */
+  @media (max-width: 768px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .pane-views .views {
+      max-height: none;
+    }
+  }
+</style>
