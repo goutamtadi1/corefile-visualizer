@@ -31,3 +31,14 @@ export function analyzeCorefile(text) {
   }
   return JSON.parse(globalThis.analyze(text))
 }
+
+/**
+ * Returns the static plugin catalog from the WASM engine.
+ * @returns {Record<string, {summary: string, docUrl: string}>}
+ */
+export function loadPluginCatalog() {
+  if (typeof globalThis.pluginCatalog !== 'function') {
+    throw new Error('WASM engine not loaded; call loadWasm() first')
+  }
+  return JSON.parse(globalThis.pluginCatalog())
+}
