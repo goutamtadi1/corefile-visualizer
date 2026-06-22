@@ -3,6 +3,7 @@
   import { loadWasm, analyzeCorefile } from './lib/wasm.js'
   import Editor from './lib/Editor.svelte'
   import StructureTree from './lib/StructureTree.svelte'
+  import ValidationPanel from './lib/ValidationPanel.svelte'
 
   const SAMPLE = `example.org:53 {
     log
@@ -46,6 +47,7 @@
     <Editor value={SAMPLE} on:change={onChange} />
     <section class="views">
       <StructureTree corefile={result?.corefile ?? null} />
+      <ValidationPanel diagnostics={result?.diagnostics ?? []} />
     </section>
   </div>
 </main>
