@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte'
   import { loadWasm, analyzeCorefile } from './lib/wasm.js'
+  import { loadInitialCorefile } from './lib/initialContent.js'
   import Editor from './lib/Editor.svelte'
   import StructureTree from './lib/StructureTree.svelte'
   import ValidationPanel from './lib/ValidationPanel.svelte'
@@ -22,12 +23,17 @@
   /** @type {import('./lib/types.js').Result|null} */
   let result = null
   let loaded = false
+  /** @type {string|null} */
+  let initialDoc = null
   let timer
 
   onMount(async () => {
-    await loadWasm()
-    loaded = true
-    runAnalysis(SAMPLE)
+    const wasmReady = loadWasm()
+      .then(() => { loaded = true })
+      .catch(() => { /* wasm failed; editor still renders, analysis unavailable */ })
+    initialDoc = await loadInitialCorefile(SAMPLE)
+    await wasmReady
+    if (loaded) runAnalysis(initialDoc)
   })
 
   function runAnalysis(text) {
@@ -44,7 +50,9 @@
 <main>
   <h1>CoreDNS Corefile Visualizer</h1>
   <div class="layout">
-    <Editor value={SAMPLE} on:change={onChange} />
+    {#if initialDoc !== null}
+      <Editor value={initialDoc} on:change={onChange} />
+    {/if}
     <section class="views">
       <StructureTree corefile={result?.corefile ?? null} />
       <ValidationPanel diagnostics={result?.diagnostics ?? []} />
