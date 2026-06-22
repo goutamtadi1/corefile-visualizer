@@ -5,6 +5,7 @@
   import Editor from './lib/Editor.svelte'
   import StructureTree from './lib/StructureTree.svelte'
   import ValidationPanel from './lib/ValidationPanel.svelte'
+  import RequestFlow from './lib/RequestFlow.svelte'
 
   const SAMPLE = `example.org:53 {
     log
@@ -56,6 +57,7 @@
     <section class="views">
       <StructureTree corefile={result?.corefile ?? null} />
       <ValidationPanel diagnostics={result?.diagnostics ?? []} />
+      <RequestFlow corefile={result?.corefile ?? null} />
     </section>
   </div>
 </main>

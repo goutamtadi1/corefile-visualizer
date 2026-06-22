@@ -7,10 +7,17 @@
  */
 
 /**
+ * @typedef {Object} FlowStep
+ * @property {string} name
+ * @property {boolean} known
+ */
+
+/**
  * @typedef {Object} ServerBlock
  * @property {string[]} keys
  * @property {number} line
  * @property {Directive[]} directives
+ * @property {FlowStep[]} [flow]
  */
 
 /**
