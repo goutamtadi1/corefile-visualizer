@@ -1,11 +1,74 @@
 :root {
+  /* Kubernetes blue + orange palette */
+  --k8s-blue: #326ce5;
+  --k8s-blue-dark: #2851b8;
+  --k8s-blue-soft: #e8f0fe;
+  --orange: #ed8b00;
+  --orange-light: #f5a623;
+  --ink: #1a2233;
+
   font-family: system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   color-scheme: light dark;
+  color: var(--ink);
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: linear-gradient(180deg, var(--k8s-blue-soft), transparent 240px);
+}
+
+h1 {
+  color: var(--k8s-blue-dark);
+  border-bottom: 3px solid var(--orange);
+  padding-bottom: 0.3rem;
+}
+
+/* Pane section labels */
+.pane h2 {
+  color: var(--k8s-blue);
+}
+
+/* Structure tree: server block keys */
+.keys {
+  color: var(--k8s-blue-dark);
+}
+
+/* Tree plugin name links */
+.name {
+  color: var(--k8s-blue);
+  appearance: none;
+}
+.name:hover {
+  color: var(--orange);
+}
+
+/* Request-flow steps */
+.step.known {
+  border-color: var(--k8s-blue) !important;
+  color: var(--k8s-blue-dark);
+  background: var(--k8s-blue-soft) !important;
+  appearance: none;
+}
+.step.unknown {
+  border-color: var(--orange) !important;
+  color: var(--orange);
+  appearance: none;
+}
+.endpoint {
+  border-color: var(--k8s-blue-dark) !important;
+}
+
+/* Validation severities */
+.diag-error .sev { color: #c0392b; }
+.diag-warning .sev { color: var(--orange); }
+
+/* Reference doc link */
+.doclink {
+  color: var(--k8s-blue);
+}
+.doclink:hover {
+  color: var(--orange);
 }
