@@ -1,19 +1,23 @@
 /** @typedef {import('./types.js').Result} Result */
 
-let ready = false
+let loadingPromise = null
 
-/** Loads wasm_exec.js and instantiates the engine, registering global analyze(). */
-export async function loadWasm() {
-  if (ready) return
-  // wasm_exec.js defines globalThis.Go and is plain (non-module) script text.
-  const execSrc = await (await fetch(`${import.meta.env.BASE_URL}wasm/wasm_exec.js`)).text()
-  // eslint-disable-next-line no-new-func
-  new Function(execSrc)()
-  const go = new globalThis.Go()
-  const resp = await fetch(`${import.meta.env.BASE_URL}wasm/main.wasm`)
-  const { instance } = await WebAssembly.instantiateStreaming(resp, go.importObject)
-  go.run(instance) // runs forever (select{}); registers globalThis.analyze
-  ready = true
+/** Loads wasm_exec.js and instantiates the engine, registering global analyze(). Idempotent and safe under concurrent calls. */
+export function loadWasm() {
+  if (loadingPromise) return loadingPromise
+  loadingPromise = (async () => {
+    // wasm_exec.js defines globalThis.Go and is plain (non-module) script text.
+    // new Function(...) runs it at global scope; safe as of Go 1.26 because
+    // wasm_exec.js assigns to globalThis (not `this`).
+    const execSrc = await (await fetch(`${import.meta.env.BASE_URL}wasm/wasm_exec.js`)).text()
+    // eslint-disable-next-line no-new-func
+    new Function(execSrc)()
+    const go = new globalThis.Go()
+    const resp = await fetch(`${import.meta.env.BASE_URL}wasm/main.wasm`)
+    const { instance } = await WebAssembly.instantiateStreaming(resp, go.importObject)
+    go.run(instance) // runs forever (select{}); registers globalThis.analyze
+  })()
+  return loadingPromise
 }
 
 /**

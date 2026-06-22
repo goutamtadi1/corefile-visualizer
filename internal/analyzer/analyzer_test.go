@@ -1,6 +1,7 @@
 package analyzer
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -81,7 +82,14 @@ func TestAnalyzeRepeatedDirectives(t *testing.T) {
 
 func TestAnalyzeMissingCloseBrace(t *testing.T) {
 	_, err := Analyze(". {\n    forward . 8.8.8.8\n")
-	if err == nil {
-		t.Fatal("expected error for missing closing brace")
+	if !errors.Is(err, ErrMissingCloseBrace) {
+		t.Fatalf("expected ErrMissingCloseBrace, got %v", err)
+	}
+}
+
+func TestAnalyzeMissingOpenBrace(t *testing.T) {
+	_, err := Analyze("example.org:53\n")
+	if !errors.Is(err, ErrMissingOpenBrace) {
+		t.Fatalf("expected ErrMissingOpenBrace, got %v", err)
 	}
 }

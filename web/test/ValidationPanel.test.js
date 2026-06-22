@@ -18,5 +18,6 @@ describe('ValidationPanel', () => {
     expect(screen.getAllByTestId('diagnostic-row')).toHaveLength(2)
     expect(screen.getByText('duplicate zone "."')).toBeInTheDocument()
     expect(screen.getByText(/line 5/i)).toBeInTheDocument()
+    expect(screen.queryByText(/line 0/i)).not.toBeInTheDocument()
   })
 })
