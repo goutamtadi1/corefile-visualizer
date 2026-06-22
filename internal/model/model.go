@@ -14,6 +14,7 @@ type ServerBlock struct {
 	Keys       []string    `json:"keys"`
 	Line       int         `json:"line"`
 	Directives []Directive `json:"directives"`
+	Flow       []FlowStep  `json:"flow,omitempty"`
 }
 
 // Directive is a single plugin invocation, preserving declaration order, its
@@ -23,6 +24,14 @@ type Directive struct {
 	Args  []string    `json:"args,omitempty"`
 	Line  int         `json:"line"`
 	Block []Directive `json:"block,omitempty"`
+}
+
+// FlowStep is one plugin in a server block's request-execution chain. Steps are
+// ordered by CoreDNS plugin.cfg execution order; Known is false for plugins not
+// present in plugin.cfg.
+type FlowStep struct {
+	Name  string `json:"name"`
+	Known bool   `json:"known"`
 }
 
 // Severity classifies a diagnostic.

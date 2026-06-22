@@ -6,6 +6,7 @@ package engine
 import (
 	"github.com/gtadi/corefile-visualizer/internal/analyzer"
 	"github.com/gtadi/corefile-visualizer/internal/model"
+	"github.com/gtadi/corefile-visualizer/internal/plugins"
 	"github.com/gtadi/corefile-visualizer/internal/validate"
 )
 
@@ -22,6 +23,9 @@ func Run(input string) model.Result {
 				Line:     0,
 			}},
 		}
+	}
+	for i := range cf.ServerBlocks {
+		cf.ServerBlocks[i].Flow = plugins.BuildFlow(cf.ServerBlocks[i].Directives)
 	}
 	return model.Result{Corefile: cf, Diagnostics: validate.Validate(cf)}
 }
