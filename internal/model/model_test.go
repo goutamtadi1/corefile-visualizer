@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 )
 
@@ -72,5 +73,16 @@ func TestServerBlockFlowJSON(t *testing.T) {
 	want := `{"keys":["."],"line":1,"directives":[{"name":"whoami","line":2}],"flow":[{"name":"errors","known":true},{"name":"myplugin","known":false}]}`
 	if got != want {
 		t.Errorf("Flow contract changed:\n got=%s\nwant=%s", got, want)
+	}
+}
+
+func TestServerBlockFlowOmittedWhenNil(t *testing.T) {
+	sb := ServerBlock{Keys: []string{"."}, Line: 1, Directives: []Directive{{Name: "whoami", Line: 2}}}
+	b, err := json.Marshal(sb)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	if strings.Contains(string(b), "flow") {
+		t.Errorf("expected flow key omitted when nil, got %s", b)
 	}
 }

@@ -27,7 +27,7 @@ describe('RequestFlow', () => {
   it('marks unknown steps', () => {
     render(RequestFlow, { corefile })
     const unknown = screen.getByText('customplugin')
-    expect(unknown.className).toContain('unknown')
+    expect(unknown.classList.contains('unknown')).toBe(true)
   })
 
   it('renders request and response endpoints', () => {

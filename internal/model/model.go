@@ -14,7 +14,7 @@ type ServerBlock struct {
 	Keys       []string    `json:"keys"`
 	Line       int         `json:"line"`
 	Directives []Directive `json:"directives"`
-	Flow       []FlowStep  `json:"flow"`
+	Flow       []FlowStep  `json:"flow,omitempty"`
 }
 
 // Directive is a single plugin invocation, preserving declaration order, its

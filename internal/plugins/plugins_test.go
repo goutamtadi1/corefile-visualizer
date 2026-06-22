@@ -91,3 +91,13 @@ func TestBuildFlowEmptyIsNonNil(t *testing.T) {
 		t.Fatalf("want empty, got %v", names(flow))
 	}
 }
+
+func TestBuildFlowCollapsesUnknownRepeats(t *testing.T) {
+	flow := BuildFlow(dirs("customx", "customx"))
+	if got := names(flow); !equal(got, []string{"customx"}) {
+		t.Fatalf("unknown repeats not collapsed: %v", got)
+	}
+	if flow[0].Known {
+		t.Error("customx should be Known=false")
+	}
+}

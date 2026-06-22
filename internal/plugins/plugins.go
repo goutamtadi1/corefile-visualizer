@@ -12,6 +12,7 @@ import (
 
 // Order is the CoreDNS plugin.cfg execution order (index = priority). Sourced
 // verbatim from CoreDNS v1.12.0; do not reorder.
+// Callers must not mutate Order; Rank is precomputed from it at init time.
 var Order = []string{
 	"root", "metadata", "geoip", "cancel", "tls", "timeouts", "multisocket",
 	"reload", "nsid", "bufsize", "bind", "debug", "trace", "ready", "health",
