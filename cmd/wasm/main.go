@@ -10,6 +10,7 @@ import (
 
 	"github.com/gtadi/corefile-visualizer/internal/engine"
 	"github.com/gtadi/corefile-visualizer/internal/model"
+	"github.com/gtadi/corefile-visualizer/internal/plugins"
 )
 
 func analyze(_ js.Value, args []js.Value) any {
@@ -24,6 +25,14 @@ func analyze(_ js.Value, args []js.Value) any {
 	return string(b)
 }
 
+func pluginCatalog(_ js.Value, _ []js.Value) any {
+	b, err := json.Marshal(plugins.Catalog())
+	if err != nil {
+		return "{}"
+	}
+	return string(b)
+}
+
 func errorJSON(msg string) string {
 	b, _ := json.Marshal(model.Result{
 		Diagnostics: []model.Diagnostic{{Severity: model.SeverityError, Message: msg}},
@@ -33,5 +42,6 @@ func errorJSON(msg string) string {
 
 func main() {
 	js.Global().Set("analyze", js.FuncOf(analyze))
+	js.Global().Set("pluginCatalog", js.FuncOf(pluginCatalog))
 	select {} // keep the Go runtime alive for JS calls
 }
