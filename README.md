@@ -113,6 +113,26 @@ You should see two server blocks — `example.org:53` with `log → errors → f
 → cache` (and `success` nested under `cache`), and `.` with `whoami` — and an
 empty validation panel ("No issues found").
 
+## CLI (pipe & visualize)
+
+Build a self-contained binary that opens any Corefile in the browser visualizer:
+
+```bash
+./scripts/build-cli.sh            # builds WASM + web app + embeds them into the binary
+```
+
+Then pipe or pass a Corefile:
+
+```bash
+cat Corefile | ./bin/corefile-visualizer    # read from stdin
+./bin/corefile-visualizer ./Corefile          # or a file argument
+./bin/corefile-visualizer --no-open ./Corefile # don't auto-open a browser (headless)
+./bin/corefile-visualizer --port 8080 ...       # pin the port (default: random)
+```
+
+It starts a local server, opens your browser with the Corefile pre-loaded, prints
+the URL, and stays running until you press Ctrl-C.
+
 ## Testing
 
 ```bash
