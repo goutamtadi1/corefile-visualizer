@@ -28,12 +28,12 @@
   let timer
 
   onMount(async () => {
-    const [doc] = await Promise.all([
-      loadInitialCorefile(SAMPLE),
-      loadWasm().then(() => { loaded = true }),
-    ])
-    initialDoc = doc
-    runAnalysis(doc)
+    const wasmReady = loadWasm()
+      .then(() => { loaded = true })
+      .catch(() => { /* wasm failed; editor still renders, analysis unavailable */ })
+    initialDoc = await loadInitialCorefile(SAMPLE)
+    await wasmReady
+    if (loaded) runAnalysis(initialDoc)
   })
 
   function runAnalysis(text) {
