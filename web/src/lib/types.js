@@ -18,6 +18,7 @@
  * @property {number} line
  * @property {Directive[]} directives
  * @property {FlowStep[]} [flow]
+ * @property {string[]} [suggestions]
  */
 
 /**

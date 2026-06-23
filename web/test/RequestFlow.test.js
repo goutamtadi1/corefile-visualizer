@@ -34,10 +34,38 @@ describe('RequestFlow', () => {
     expect(unknown.classList.contains('unknown')).toBe(true)
   })
 
-  it('renders request and response endpoints', () => {
+  it('renders friendly query entry and answer exit endpoints', () => {
     render(RequestFlow, { corefile })
-    expect(screen.getByText('request')).toBeInTheDocument()
-    expect(screen.getByText('response')).toBeInTheDocument()
+    expect(screen.getByTestId('flow-entry')).toHaveTextContent(/A DNS query for/)
+    expect(screen.getByTestId('flow-entry')).toHaveTextContent('example.org:53')
+    expect(screen.getByTestId('flow-exit')).toHaveTextContent(/Answer returned to the client/)
+  })
+
+  it('shows the plain-English description from the catalog', () => {
+    const catalog = { errors: { summary: 'enables error logging.', docUrl: '' } }
+    render(RequestFlow, { corefile, catalog })
+    expect(screen.getByText('enables error logging.')).toBeInTheDocument()
+  })
+
+  it('shows an improvement tooltip on the zone when suggestions exist', () => {
+    const cf = {
+      serverBlocks: [
+        { keys: ['svc.local:53'], line: 1, directives: [], flow: [], suggestions: ["Add the 'cache' plugin to speed up repeated lookups."] },
+      ],
+    }
+    render(RequestFlow, { corefile: cf })
+    const zone = screen.getByTestId('zone-tip')
+    expect(zone).toHaveTextContent('svc.local:53')
+    expect(zone.getAttribute('data-tip')).toMatch(/Improve this block/)
+    expect(zone.getAttribute('data-tip')).toMatch(/cache/)
+  })
+
+  it('shows no zone tooltip when there are no suggestions', () => {
+    const cf = {
+      serverBlocks: [{ keys: ['.'], line: 1, directives: [], flow: [], suggestions: [] }],
+    }
+    render(RequestFlow, { corefile: cf })
+    expect(screen.queryByTestId('zone-tip')).toBeNull()
   })
 
   it('shows an empty state when corefile is null', () => {
