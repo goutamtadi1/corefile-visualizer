@@ -1,11 +1,77 @@
 :root {
+  /* Kubernetes blue + orange palette */
+  --k8s-blue: #326ce5;
+  --k8s-blue-dark: #2851b8;
+  --k8s-blue-soft: #e8f0fe;
+  --orange: #ed8b00;
+  --orange-light: #f5a623;
+  --ink: #1a2233;
+
   font-family: system-ui, -apple-system, sans-serif;
   line-height: 1.5;
-  color-scheme: light dark;
+  /* The theme is tuned for a light surface; force it so OS dark mode does not
+     paint a dark canvas under dark text. */
+  color-scheme: light;
+  color: var(--ink);
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  color: var(--ink);
+  background-color: #ffffff;
+  /* Soft blue wash at the top fading to white. */
+  background-image: linear-gradient(180deg, var(--k8s-blue-soft), #ffffff 240px);
+  background-repeat: no-repeat;
+}
+
+h1 {
+  color: var(--k8s-blue-dark);
+  border-bottom: 3px solid var(--orange);
+  padding-bottom: 0.3rem;
+}
+
+/* Pane section labels */
+.pane h2 {
+  color: var(--k8s-blue);
+}
+
+/* Each generated view reads as a card on the white surface. */
+.pane-views .views > * {
+  display: block;
+  background: #ffffff;
+  border: 1px solid #e3e8f0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.85rem;
+  box-shadow: 0 1px 2px rgba(26, 34, 51, 0.05);
+}
+
+/* Request-flow steps */
+.step.known {
+  border-color: var(--k8s-blue) !important;
+  color: var(--k8s-blue-dark);
+  background: var(--k8s-blue-soft) !important;
+  appearance: none;
+}
+.step.unknown {
+  border-color: var(--orange) !important;
+  color: var(--orange);
+  appearance: none;
+}
+.endpoint {
+  border-color: var(--k8s-blue-dark) !important;
+}
+
+/* Validation severities */
+.diag-error .sev { color: #c0392b; }
+.diag-warning .sev { color: var(--orange); }
+
+/* Reference doc link */
+.doclink {
+  color: var(--k8s-blue);
+}
+.doclink:hover {
+  color: var(--orange);
 }

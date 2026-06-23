@@ -101,3 +101,40 @@ func TestBuildFlowCollapsesUnknownRepeats(t *testing.T) {
 		t.Error("customx should be Known=false")
 	}
 }
+
+func TestCatalogCoversOrderExactly(t *testing.T) {
+	cat := Catalog()
+	if len(cat) != len(Order) {
+		t.Fatalf("catalog has %d entries, Order has %d", len(cat), len(Order))
+	}
+	for _, name := range Order {
+		m, ok := cat[name]
+		if !ok {
+			t.Errorf("missing metadata for %q", name)
+			continue
+		}
+		if m.Summary == "" {
+			t.Errorf("empty summary for %q", name)
+		}
+	}
+}
+
+func TestCatalogDocURLPattern(t *testing.T) {
+	cat := Catalog()
+	for name, m := range cat {
+		if m.DocURL == "" {
+			continue // some plugins (e.g. "on") have no doc page
+		}
+		want := "https://coredns.io/plugins/" + name + "/"
+		if m.DocURL != want {
+			t.Errorf("docURL for %q = %q, want %q", name, m.DocURL, want)
+		}
+	}
+}
+
+func TestCatalogKnownPlugin(t *testing.T) {
+	cat := Catalog()
+	if cat["forward"].Summary == "" || cat["forward"].DocURL == "" {
+		t.Errorf("forward metadata incomplete: %+v", cat["forward"])
+	}
+}

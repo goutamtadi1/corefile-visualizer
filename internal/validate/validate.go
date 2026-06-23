@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/gtadi/corefile-visualizer/internal/model"
+	"github.com/gtadi/corefile-visualizer/internal/plugins"
 )
 
 // Validate returns diagnostics for the given Corefile. The result is always
@@ -25,6 +26,21 @@ func Validate(cf *model.Corefile) []model.Diagnostic {
 				Severity: model.SeverityWarning,
 				Message:  fmt.Sprintf("server block %q has no plugins", strings.Join(sb.Keys, " ")),
 				Line:     sb.Line,
+			})
+		}
+		seenUnknown := map[string]bool{}
+		for _, d := range sb.Directives {
+			if _, ok := plugins.Rank(d.Name); ok {
+				continue
+			}
+			if seenUnknown[d.Name] {
+				continue
+			}
+			seenUnknown[d.Name] = true
+			diags = append(diags, model.Diagnostic{
+				Severity: model.SeverityWarning,
+				Message:  fmt.Sprintf("unknown plugin %q — not a recognized CoreDNS plugin", d.Name),
+				Line:     d.Line,
 			})
 		}
 		for _, key := range sb.Keys {
