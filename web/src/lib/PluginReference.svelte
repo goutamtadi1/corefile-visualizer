@@ -5,7 +5,7 @@
 </script>
 
 <div class="reference">
-  <h2>Reference</h2>
+  <h3>Reference</h3>
   {#if $selectedPlugin === null}
     <p data-testid="reference-empty">Select a plugin in the tree or flow to see its reference.</p>
   {:else if catalog[$selectedPlugin]}

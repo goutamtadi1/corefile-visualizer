@@ -1,6 +1,8 @@
-import { render, screen } from '@testing-library/svelte'
-import { describe, it, expect } from 'vitest'
+import { render, screen, fireEvent } from '@testing-library/svelte'
+import { describe, it, expect, beforeEach } from 'vitest'
+import { get } from 'svelte/store'
 import StructureTree from '../src/lib/StructureTree.svelte'
+import { selectedPlugin } from '../src/lib/selection.js'
 
 const corefile = {
   serverBlocks: [
@@ -16,6 +18,8 @@ const corefile = {
 }
 
 describe('StructureTree', () => {
+  beforeEach(() => selectedPlugin.set(null))
+
   it('renders server block keys', () => {
     render(StructureTree, { corefile })
     expect(screen.getByText('example.org:53')).toBeInTheDocument()
@@ -35,5 +39,11 @@ describe('StructureTree', () => {
   it('shows an empty state when corefile is null', () => {
     render(StructureTree, { corefile: null })
     expect(screen.getByTestId('tree-empty')).toBeInTheDocument()
+  })
+
+  it('clicking a top-level plugin button updates selectedPlugin store', () => {
+    render(StructureTree, { corefile })
+    fireEvent.click(screen.getByText('forward'))
+    expect(get(selectedPlugin)).toBe('forward')
   })
 })
