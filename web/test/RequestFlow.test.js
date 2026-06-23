@@ -47,6 +47,27 @@ describe('RequestFlow', () => {
     expect(screen.getByText('enables error logging.')).toBeInTheDocument()
   })
 
+  it('shows an improvement tooltip on the zone when suggestions exist', () => {
+    const cf = {
+      serverBlocks: [
+        { keys: ['svc.local:53'], line: 1, directives: [], flow: [], suggestions: ["Add the 'cache' plugin to speed up repeated lookups."] },
+      ],
+    }
+    render(RequestFlow, { corefile: cf })
+    const zone = screen.getByTestId('zone-tip')
+    expect(zone).toHaveTextContent('svc.local:53')
+    expect(zone.getAttribute('data-tip')).toMatch(/Improve this block/)
+    expect(zone.getAttribute('data-tip')).toMatch(/cache/)
+  })
+
+  it('shows no zone tooltip when there are no suggestions', () => {
+    const cf = {
+      serverBlocks: [{ keys: ['.'], line: 1, directives: [], flow: [], suggestions: [] }],
+    }
+    render(RequestFlow, { corefile: cf })
+    expect(screen.queryByTestId('zone-tip')).toBeNull()
+  })
+
   it('shows an empty state when corefile is null', () => {
     render(RequestFlow, { corefile: null })
     expect(screen.getByTestId('flow-empty')).toBeInTheDocument()

@@ -26,6 +26,7 @@ func Run(input string) model.Result {
 	}
 	for i := range cf.ServerBlocks {
 		cf.ServerBlocks[i].Flow = plugins.BuildFlow(cf.ServerBlocks[i].Directives)
+		cf.ServerBlocks[i].Suggestions = plugins.Suggestions(cf.ServerBlocks[i].Directives)
 	}
 	return model.Result{Corefile: cf, Diagnostics: validate.Validate(cf)}
 }

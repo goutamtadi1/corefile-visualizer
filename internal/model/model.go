@@ -15,6 +15,9 @@ type ServerBlock struct {
 	Line       int         `json:"line"`
 	Directives []Directive `json:"directives"`
 	Flow       []FlowStep  `json:"flow,omitempty"`
+	// Suggestions are best-practice improvement tips for this server block
+	// (e.g. "add the cache plugin"). Empty when nothing applies.
+	Suggestions []string `json:"suggestions,omitempty"`
 }
 
 // Directive is a single plugin invocation, preserving declaration order, its

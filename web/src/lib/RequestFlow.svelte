@@ -12,6 +12,16 @@
     if (catalog[step.name]) return catalog[step.name].summary
     return step.known ? '' : 'custom plugin — not a recognized CoreDNS plugin'
   }
+
+  /**
+   * Improvement tip for a server block, or null when there are no suggestions
+   * (in which case no tooltip is shown).
+   */
+  function improveTip(block) {
+    const tips = block.suggestions
+    if (!tips || tips.length === 0) return null
+    return '💡 Improve this block:\n' + tips.map((t) => '• ' + t).join('\n')
+  }
 </script>
 
 {#if !corefile}
@@ -22,7 +32,13 @@
       <section class="journey">
         <div class="endpoint entry" data-testid="flow-entry">
           <span class="endpoint-icon">🔎</span>
-          <span>A DNS query for <code class="zone">{block.keys.join(' ')}</code> arrives</span>
+          <span>A DNS query for
+            {#if improveTip(block)}
+              <code class="zone tip" data-tip={improveTip(block)} data-testid="zone-tip" tabindex="0">{block.keys.join(' ')}</code>
+            {:else}
+              <code class="zone">{block.keys.join(' ')}</code>
+            {/if}
+            arrives</span>
         </div>
 
         <ol class="steps">
@@ -139,5 +155,34 @@
   .desc {
     color: #5b6b85;
     font-size: 0.85rem;
+  }
+
+  /* Zone with improvement suggestions: hoverable, with a CSS-only tooltip. */
+  .zone.tip {
+    position: relative;
+    cursor: help;
+    border-bottom: 1px dashed var(--k8s-blue, #326ce5);
+  }
+  .zone.tip[data-tip]:hover::after,
+  .zone.tip[data-tip]:focus-visible::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: 0;
+    top: calc(100% + 6px);
+    z-index: 10;
+    width: max-content;
+    max-width: 320px;
+    padding: 0.5rem 0.65rem;
+    border-radius: 6px;
+    background: var(--ink, #1a2233);
+    color: #fff;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 400;
+    line-height: 1.4;
+    white-space: pre-line;
+    text-align: left;
+    box-shadow: 0 2px 10px rgba(26, 34, 51, 0.25);
+    pointer-events: none;
   }
 </style>
