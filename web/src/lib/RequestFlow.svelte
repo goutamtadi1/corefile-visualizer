@@ -28,8 +28,8 @@
   <p data-testid="flow-empty">No Corefile parsed.</p>
 {:else}
   <div class="flows">
-    {#each corefile.serverBlocks as block}
-      <section class="journey">
+    {#each corefile.serverBlocks as block, bi}
+      <section class="journey" id="zone-{bi}">
         <div class="endpoint entry" data-testid="flow-entry">
           <span class="endpoint-icon">🔎</span>
           <span>A DNS query for

@@ -3,6 +3,7 @@
   import { loadWasm, analyzeCorefile, loadPluginCatalog } from './lib/wasm.js'
   import { loadInitialCorefile } from './lib/initialContent.js'
   import Editor from './lib/Editor.svelte'
+  import ZoneIndex from './lib/ZoneIndex.svelte'
   import ValidationPanel from './lib/ValidationPanel.svelte'
   import RequestFlow from './lib/RequestFlow.svelte'
   import PluginReference from './lib/PluginReference.svelte'
@@ -65,6 +66,7 @@
     <section class="pane pane-views" aria-label="Visualization">
       <h2>Visualization</h2>
       <div class="views">
+        <ZoneIndex corefile={result?.corefile ?? null} />
         <ValidationPanel diagnostics={result?.diagnostics ?? []} />
         <RequestFlow corefile={result?.corefile ?? null} {catalog} />
         <PluginReference {catalog} />
