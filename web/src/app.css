@@ -37,6 +37,20 @@ h1 {
   color: var(--k8s-blue);
 }
 
+/* Raw Corefile editor scrolls independently, mirroring the views pane.
+   The CodeMirror elements are created at runtime, so this lives in global CSS. */
+.pane-source .cm-editor {
+  max-height: calc(100vh - 8rem);
+}
+.pane-source .cm-scroller {
+  overflow: auto;
+}
+@media (max-width: 768px) {
+  .pane-source .cm-editor {
+    max-height: none;
+  }
+}
+
 /* Each generated view reads as a card on the white surface. */
 .pane-views .views > * {
   display: block;
