@@ -66,7 +66,7 @@
       <h2>Visualization</h2>
       <div class="views">
         <ValidationPanel diagnostics={result?.diagnostics ?? []} />
-        <RequestFlow corefile={result?.corefile ?? null} />
+        <RequestFlow corefile={result?.corefile ?? null} {catalog} />
         <PluginReference {catalog} />
       </div>
     </section>
